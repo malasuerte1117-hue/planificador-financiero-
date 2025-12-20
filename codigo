@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Planificador de Gastos gratuito: organiza ingresos, gastos y metas de ahorro según tu frecuencia real (semanal, quincenal, mensual). 100% privado, sin registro.">
+  <title>Planificador de Gastos</title>
+
+  <!-- Base para que las rutas relativas funcionen bien en GitHub Pages (sitio de proyecto) -->
+  <base href="./">
+
+  <style>
+    :root {
+      --income: #27ae60;
+      --expense: #e74c3c;
+      --savings: #3498db;
+      --available: #9b59b6;
+      --warning: #f39c12;
+      --success: #2ecc71;
+      --bg: #f8f9fa;
+      --card: #ffffff;
+      --text: #2c3e50;
+      --border: #e0e0e0;
+      --danger: #e74c3c;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --card: #1e1e1e;
+        --text: #e0e0e0;
+        --border: #444;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 16px;
+      line-height: 1.6;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding: 12px 0;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+    }
+
+    h2 {
+      margin-bottom: 16px;
+      font-size: 1.4rem;
+      color: var(--text);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--card);
+      color: var(--text);
+    }
+
+    button {
+      background: var(--income);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .btn-danger { background: var(--expense); }
+    .btn-print { background: var(--savings); }
+    .btn-pdf { background: var(--available); }
+
+    .entry {
+      background: rgba(220,220,220,0.05);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border-left: 3px solid var(--expense);
+    }
+
+    .entry.income {
+      border-left-color: var(--income);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    th, td {
+      padding: 12px 8px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    th {
+      background: rgba(0,0,0,0.05);
+      font-weight: 600;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .summary-item {
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.03);
+    }
+
+    .summary-item.income { border-top: 3px solid var(--income); }
+    .summary-item.expense { border-top: 3px solid var(--expense); }
+    .summary-item.savings { border-top: 3px solid var(--savings); }
+    .summary-item.available { border-top: 3px solid var(--available); }
+
+    .summary-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .explanation {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    .warning {
+      background: rgba(243, 156, 18, 0.15);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      color: var(--warning);
+      font-weight: 600;
+    }
+
+    .success {
+      background: rgba(46, 204, 113, 0.15);
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .actions-final {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+
+    .actions-final button {
+      flex: 1;
+      min-width: 150px;
+    }
+
+    @media print {
+      .no-print { display: none !important; }
+      body { padding: 0; background: white; color: black; }
+      .card { box-shadow: none; border: 1px solid #ccc; }
+      .actions-final { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Planificador de Gastos</h1>
+  </header>
+
+  <section class="card">
+    <h2>1. Ingresos</h2>
+    <div id="incomes"></div>
+    <button id="add-income" class="no-print">+ Agregar ingreso</button>
+  </section>
+
+  <section class="card">
+    <h2>2. Gastos y Deudas</h2>
+    <div id="expenses"></div>
+    <button id="add-expense" class="no-print">+ Agregar gasto</button>
+  </section>
+
+  <section class="card">
+    <h2>3. Ahorro</h2>
+    <label>
+      <input type="radio" name="savings-mode" value="percent" checked> Porcentaje del ingreso total
+    </label>
+    <div id="percent-fields">
+      <label>Porcentaje (%):</label>
+      <input type="number" id="savings-percent" value="0" min="0" max="100" step="0.1">
+    </div>
+    <label>
+      <input type="radio" name="savings-mode" value="goal"> Meta de ahorro específica
+    </label>
+    <div id="goal-fields" class="hidden">
+      <label>Nombre de la meta:</label>
+      <input type="text" id="savings-goal-name" placeholder="Ej: Ahorrar para una PC">
+      <label>Monto a ahorrar ($):</label>
+      <input type="number" id="savings-goal-amount" min="0" step="0.01" placeholder="2000">
+      <label>Plazo para ahorrar:</label>
+      <div class="form-row">
+        <input type="number" id="savings-goal-value" min="1" value="2" placeholder="Ej: 2">
+        <select id="savings-goal-unit">
+          <option value="weekly">Semanas</option>
+          <option value="biweekly">Quincenas</option>
+          <option value="monthly">Meses</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card no-print">
+    <button id="calc">Calcular Plan</button>
+    <button id="reset" class="btn-danger" style="margin-top:10px;">Reiniciar todo</button>
+  </section>
+
+  <!-- Resultados -->
+  <section class="card">
+    <h2>Resultados</h2>
+    <div id="summary"></div>
+    <div id="savings-message" class="hidden"></div>
+    <table id="table">
+      <thead>
+        <tr><th>Gasto</th><th>Original</th><th>Apartar por ingreso</th><th>Explicación</th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div id="cards"></div>
+  </section>
+
+  <!-- Botones finales -->
+  <div class="actions-final no-print">
+    <button id="print-btn" class="btn-print">Imprimir</button>
+    <button id="pdf-btn" class="btn-pdf">Guardar como PDF</button>
+  </div>
+
+  <script>
+    const PERIOD_WEEKS = { weekly: 1, biweekly: 2, monthly: 4 };
+    const EXPENSE_WEEKS = { weekly:1, biweekly:2, monthly:4, bimonthly:8, quarterly:12, annual:52 };
+    const LABELS = { weekly:'semanal', biweekly:'quincenal', monthly:'mensual' };
+
+    const safeNum = (val) => {
+      const n = parseFloat(val);
+      return isNaN(n) || n <= 0 ? 0 : n;
+    };
+    const round2 = (n) => Math.round(n * 100) / 100;
+
+    function init() {
+      attachListeners();
+      document.querySelectorAll('input[name="savings-mode"]').forEach(radio => {
+        radio.addEventListener('change', toggleSavingsMode);
+      });
+    }
+
+    function toggleSavingsMode() {
+      const isGoal = document.querySelector('input[name="savings-mode"]:checked').value === 'goal';
+      document.getElementById('percent-fields').classList.toggle('hidden', isGoal);
+      document.getElementById('goal-fields').classList.toggle('hidden', !isGoal);
+    }
+
+    function attachListeners() {
+      document.getElementById('add-income').onclick = () => addIncome();
+      document.getElementById('add-expense').onclick = () => addExpense();
+      document.getElementById('calc').onclick = calculate;
+      document.getElementById('reset').onclick = () => {
+        if (confirm('¿Eliminar toda la configuración?')) {
+          document.getElementById('incomes').innerHTML = '';
+          document.getElementById('expenses').innerHTML = '';
+          document.querySelector('input[name="savings-mode"][value="percent"]').checked = true;
+          toggleSavingsMode();
+          document.getElementById('savings-percent').value = '0';
+          clearResults();
+        }
+      };
+      document.getElementById('print-btn').onclick = () => window.print();
+      document.getElementById('pdf-btn').onclick = () => saveAsPDF();
+
+      document.getElementById('expenses').addEventListener('click', (e) => {
+        if (e.target.classList.contains('del')) e.target.closest('.entry').remove();
+      });
+    }
+
+    function saveAsPDF() {
+      if (!window.jsPDF) {
+        alert('La función de PDF requiere una conexión a internet para cargar jsPDF.');
+        if (confirm('¿Deseas imprimir en su lugar?')) window.print();
+        return;
+      }
+      alert('Para versión sin internet, usa "Imprimir" y elige "Guardar como PDF".');
+      window.print();
+    }
+
+    function clearResults() {
+      document.getElementById('summary').innerHTML = '';
+      document.getElementById('tbody').innerHTML = '';
+      document.getElementById('cards').innerHTML = '';
+      document.getElementById('savings-message').className = 'hidden';
+    }
+
+    function addIncome() {
+      const div = document.createElement('div');
+      div.className = 'entry income';
+      div.innerHTML = `
+        <div class="form-row">
+          <input type="text" class="name" placeholder="Nombre" value="">
+          <input type="number" class="amount" placeholder="0" value="" min="0" step="0.01">
+        </div>
+        <select class="period">
+          <option value="weekly">Semanal</option>
+          <option value="biweekly">Quincenal</option>
+          <option value="monthly">Mensual</option>
+        </select>
+      `;
+      document.getElementById('incomes').appendChild(div);
+    }
+
+    function addExpense() {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.innerHTML = `
+        <div class="form-row">
+          <input type="text" class="name" placeholder="Nombre" value="">
+          <input type="number" class="amount" placeholder="0" value="" min="0" step="0.01">
+        </div>
+        <select class="period">
+          <option value="weekly">Semanal</option>
+          <option value="biweekly">Quincenal</option>
+          <option value="monthly">Mensual</option>
+          <option value="bimonthly">Bimestral</option>
+          <option value="quarterly">Trimestral</option>
+          <option value="annual">Anual</option>
+        </select>
+        <button class="del btn-danger" style="margin-top:10px;padding:6px;">Eliminar</button>
+      `;
+      document.getElementById('expenses').appendChild(div);
+    }
+
+    function calculate() {
+      const incomes = [];
+      document.querySelectorAll('#incomes .entry').forEach(el => {
+        const name = el.querySelector('.name').value.trim() || 'Ingreso';
+        const amount = safeNum(el.querySelector('.amount').value);
+        const period = el.querySelector('.period').value;
+        if (amount > 0) incomes.push({ name, amount, period });
+      });
+
+      if (incomes.length === 0) {
+        alert('Agrega al menos un ingreso válido');
+        return;
+      }
+
+      const expenses = [];
+      document.querySelectorAll('#expenses .entry').forEach(el => {
+        const name = el.querySelector('.name').value.trim() || 'Gasto';
+        const amount = safeNum(el.querySelector('.amount').value);
+        const period = el.querySelector('.period').value;
+        if (amount > 0) expenses.push({ name, amount, period });
+      });
+
+      const mainPeriod = incomes[0].period;
+      const mainWeeks = PERIOD_WEEKS[mainPeriod] || 1;
+
+      let totalIncome = 0;
+      incomes.forEach(i => {
+        const iWeeks = PERIOD_WEEKS[i.period] || 1;
+        totalIncome += i.amount * (mainWeeks / iWeeks);
+      });
+
+      let totalSetAside = 0;
+      const details = [];
+      expenses.forEach(exp => {
+        const expWeeks = EXPENSE_WEEKS[exp.period] || 4;
+        const periods = expWeeks / mainWeeks;
+        const apartado = round2(exp.amount / periods);
+        totalSetAside += apartado;
+        details.push({
+          name: exp.name,
+          original: `$${round2(exp.amount)} / ${LABELS[exp.period]}`,
+          apartado,
+          expText: `${exp.amount} ÷ ${periods.toFixed(2)} = ${apartado}`
+        });
+      });
+
+      let savingsAmount = 0;
+      let message = '';
+      let messageType = ''; // 'warning' o 'success'
+      const mode = document.querySelector('input[name="savings-mode"]:checked').value;
+
+      const availableBeforeSavings = totalIncome - totalSetAside;
+      const maxSavings = Math.max(0, availableBeforeSavings);
+
+      if (mode === 'percent') {
+        const pct = safeNum(document.getElementById('savings-percent').value);
+        savingsAmount = (pct === 0) ? 0 : round2((totalIncome * pct) / 100);
+        if (savingsAmount > maxSavings) {
+          savingsAmount = round2(maxSavings);
+          message = `ⓘ Tu porcentaje de ahorro excedía tu disponibilidad. Se ajustó a $${savingsAmount} ${LABELS[mainPeriod]}.`;
+          messageType = 'success';
+        }
+      } else {
+        const goalName = document.getElementById('savings-goal-name').value.trim() || 'tu meta';
+        const goalAmount = safeNum(document.getElementById('savings-goal-amount').value);
+        const goalValue = Math.max(1, safeNum(document.getElementById('savings-goal-value').value));
+        const goalUnit = document.getElementById('savings-goal-unit').value;
+
+        const goalWeeks = goalValue * (PERIOD_WEEKS[goalUnit] || 1);
+        const periodsInGoal = goalWeeks / mainWeeks;
+        let requestedSavings = round2(goalAmount / periodsInGoal);
+
+        if (requestedSavings > maxSavings && goalAmount > 0) {
+          savingsAmount = round2(maxSavings);
+          message = `ⓘ La meta "${goalName}" excedía tu disponibilidad. Se ajustó el ahorro a $${savingsAmount} ${LABELS[mainPeriod]} (máximo posible).`;
+          messageType = 'success';
+        } else {
+          savingsAmount = requestedSavings;
+          if (goalAmount > 0) {
+            message = `✓ Meta "${goalName}" es viable. Ahorrarás $${savingsAmount} ${LABELS[mainPeriod]}.`;
+            messageType = 'success';
+          }
+        }
+      }
+
+      const available = round2(totalIncome - totalSetAside - savingsAmount);
+      renderResults(totalIncome, details, savingsAmount, available, mainPeriod, message, messageType);
+    }
+
+    function renderResults(income, details, savings, available, period, message, messageType) {
+      const label = LABELS[period] || period;
+      const totalExp = details.reduce((s, d) => s + d.apartado, 0);
+
+      document.getElementById('summary').innerHTML = `
+        <div style="background:rgba(39,174,96,0.1);padding:12px;border-radius:8px;margin-bottom:16px;">
+          <h3>Tu plan ${label}</h3>
+          <p><strong>Ingreso total:</strong> $${round2(income)}</p>
+          <p><strong>Gastos:</strong> $${round2(totalExp)}</p>
+          <p><strong>Ahorro:</strong> $${savings}</p>
+          <p><strong>Disponible:</strong> $${Math.max(0, available)}</p>
+        </div>
+      `;
+
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = '';
+      details.forEach(d => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${d.name}</td>
+          <td>${d.original}</td>
+          <td>$${d.apartado} / ${label}</td>
+          <td class="explanation">${d.expText}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('cards').innerHTML = `
+        <div class="summary-grid">
+          <div class="summary-item income"><div>Ingreso</div><div class="summary-value">$${round2(income)}</div></div>
+          <div class="summary-item expense"><div>Gastos</div><div class="summary-value">$${round2(totalExp)}</div></div>
+          <div class="summary-item savings"><div>Ahorro</div><div class="summary-value">$${savings}</div></div>
+          <div class="summary-item available"><div>Disponible</div><div class="summary-value">$${Math.max(0, available)}</div></div>
+        </div>
+      `;
+
+      const msgEl = document.getElementById('savings-message');
+      if (message) {
+        msgEl.textContent = message;
+        msgEl.className = messageType === 'warning' ? 'warning' : 'success';
+      } else {
+        msgEl.className = 'hidden';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+
+</body>
+</html>
