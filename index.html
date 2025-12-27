@@ -359,12 +359,18 @@
     <div id="summary-cards"></div>
   </section>
 
-  <!-- SCRIPT IDÉNTICO AL ANTERIOR (sin cambios funcionales) -->
   <script>
     const round2 = (n) => Math.round(n * 100) / 100;
     const safeNum = (v) => {
       const n = parseFloat(v);
       return isNaN(n) || n < 0 ? 0 : n;
+    };
+
+    // Conversión a mensual: 1 mes = 4 semanas
+    const TO_MONTHLY = {
+      weekly: 4,      // semanal → x4
+      biweekly: 2,    // quincenal → x2
+      monthly: 1      // mensual → x1
     };
 
     function getFullMonthsBetween(startDate, endDate) {
@@ -447,7 +453,9 @@
       });
     }
 
+    // ✅ ¡Función corregida! Ahora incluye frecuencia
     function addIncome(data = {}) {
+      const period = data.period || 'monthly';
       const div = document.createElement('div');
       div.className = 'entry income';
       div.innerHTML = `
@@ -455,6 +463,12 @@
           <input type="text" class="name" placeholder="Nombre" value="${data.name || ''}">
           <input type="number" class="amount" placeholder="0" value="${data.amount || ''}" min="0" step="0.01">
         </div>
+        <label>Frecuencia:</label>
+        <select class="period">
+          <option value="weekly" ${period === 'weekly' ? 'selected' : ''}>Semanal</option>
+          <option value="biweekly" ${period === 'biweekly' ? 'selected' : ''}>Quincenal</option>
+          <option value="monthly" ${period === 'monthly' ? 'selected' : ''}>Mensual</option>
+        </select>
         <button type="button" class="del btn-danger no-print" style="padding:8px; margin-top:12px;">Eliminar</button>
       `;
       document.getElementById('incomes').appendChild(div);
@@ -473,15 +487,19 @@
       document.getElementById('expenses').appendChild(div);
     }
 
+    // ✅ ¡Cálculo corregido! Ahora convierte a mensual
     function updateAll() {
       let totalIncome = 0;
       const incomes = [];
       document.querySelectorAll('#incomes .entry').forEach(el => {
         const name = el.querySelector('.name').value.trim() || 'Ingreso';
         const amount = safeNum(el.querySelector('.amount').value);
+        const period = el.querySelector('.period').value || 'monthly';
         if (amount > 0) {
-          totalIncome += amount;
-          incomes.push({ name, amount });
+          // Convertir a mensual
+          const monthlyAmount = amount * TO_MONTHLY[period];
+          totalIncome += monthlyAmount;
+          incomes.push({ name, amount, period, monthlyAmount });
         }
       });
 
@@ -521,8 +539,11 @@
       tbody.innerHTML = '';
 
       incomes.forEach(i => {
+        let freqText = '';
+        if (i.period === 'weekly') freqText = ' (semanal)';
+        else if (i.period === 'biweekly') freqText = ' (quincenal)';
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i.name}</td><td>$${round2(i.amount)}</td><td>—</td><td>Ingreso</td>`;
+        tr.innerHTML = `<td>${i.name}${freqText}</td><td>$${round2(i.amount)}</td><td>—</td><td>Ingreso mensualizado: $${round2(i.monthlyAmount)}</td>`;
         tbody.appendChild(tr);
       });
 
@@ -551,7 +572,7 @@
       }
 
       document.getElementById('summary').innerHTML = `
-        <p><strong>Total ingresos:</strong> $${round2(totalIncome)}</p>
+        <p><strong>Total ingresos (mensual):</strong> $${round2(totalIncome)}</p>
         <p><strong>Gastos + Ahorro:</strong> $${round2(savingsAmount + expenses.reduce((s,e)=>s+e.amount,0))}</p>
         <p><strong>Disponible:</strong> $${round2(Math.max(0, available))} ${available < 0 ? ' (déficit)' : ''}</p>
       `;
@@ -570,7 +591,8 @@
       const data = {
         incomes: Array.from(document.querySelectorAll('#incomes .entry')).map(el => ({
           name: el.querySelector('.name').value,
-          amount: el.querySelector('.amount').value
+          amount: el.querySelector('.amount').value,
+          period: el.querySelector('.period').value
         })),
         expenses: Array.from(document.querySelectorAll('#expenses .entry')).map(el => ({
           name: el.querySelector('.name').value,
