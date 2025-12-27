@@ -4,29 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Planificador de Gastos</title>
-  <!-- Fuente moderna para números y texto claro -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Opción A: Clásico Profesional */
-      --primary-bg: #f8fafc;         /* 60% - Fondo claro */
-      --card-bg: #ffffff;            /* Tarjetas */
-      --text-primary: #0f172a;       /* Azul marino - textos principales */
+      --primary-bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-primary: #0f172a;
       --text-secondary: #475569;
       --border-color: #e2e8f0;
-      --header-bg: #0f172a;          /* Azul marino - cabecera */
+      --header-bg: #0f172a;
       --header-text: #ffffff;
-      
-      /* Acciones y estados */
-      --income-color: #10b981;       /* Verde esmeralda - ahorro/ingresos */
-      --expense-color: #ef4444;      /* Rojo suave - gastos */
-      --available-color: #06b6d4;    /* Cian - disponible */
-      --warning-color: #f59e0b;      /* Ámbar - advertencias */
-      
-      /* Botones */
+      --income-color: #10b981;
+      --expense-color: #ef4444;
+      --available-color: #06b6d4;
+      --warning-color: #f59e0b;
       --btn-primary: #10b981;
       --btn-danger: #ef4444;
-      --btn-secondary: #4f46e5;      /* Índigo suave para PDF */
+      --btn-secondary: #4f46e5;
       --btn-print: #06b6d4;
     }
 
@@ -99,12 +93,6 @@
       .form-row {
         grid-template-columns: 1fr;
       }
-      header {
-        border-radius: 12px;
-      }
-      .card {
-        padding: 18px;
-      }
     }
 
     label {
@@ -151,22 +139,11 @@
     .btn-danger {
       background: linear-gradient(to bottom, var(--btn-danger), #dc2626);
     }
-    .btn-danger:hover {
-      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
-    }
-
     .btn-secondary {
       background: linear-gradient(to bottom, var(--btn-secondary), #4338ca);
     }
-    .btn-secondary:hover {
-      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
-    }
-
     .btn-print {
       background: linear-gradient(to bottom, var(--btn-print), #0891b2);
-    }
-    .btn-print:hover {
-      box-shadow: 0 4px 8px rgba(6, 182, 212, 0.3);
     }
 
     .entry {
@@ -180,6 +157,8 @@
     .entry.income {
       border-left-color: var(--income-color);
     }
+
+    .hidden { display: none; }
 
     table {
       width: 100%;
@@ -200,42 +179,77 @@
       color: var(--text-secondary);
     }
 
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 14px;
+    /* NUEVO: Estilos para la tabla de resultados y tarjetas */
+    .results-container {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 20px;
       margin-top: 20px;
     }
 
-    .summary-item {
-      text-align: center;
-      padding: 16px;
-      border-radius: 12px;
-      background: rgba(248, 250, 252, 0.6);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      .summary-item {
-        background: rgba(30, 41, 59, 0.4);
-      }
-    }
-
-    .summary-item.income { border-top: 4px solid var(--income-color); }
-    .summary-item.expense { border-top: 4px solid var(--expense-color); }
-    .summary-item.savings { border-top: 4px solid var(--income-color); }
-    .summary-item.available { border-top: 4px solid var(--available-color); }
-
-    .summary-value {
+    .results-header {
+      color: #f8fafc;
       font-size: 1.3rem;
+      margin-bottom: 16px;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .results-table th,
+    .results-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+      color: #f8fafc;
+      font-size: 0.95rem;
+    }
+
+    .results-table th {
+      background: #1e293b;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .summary-card {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      border-top: 4px solid transparent;
+      color: #f8fafc;
+    }
+
+    .summary-card.income { border-top: 4px solid #10b981; }
+    .summary-card.expense { border-top: 4px solid #ef4444; }
+    .summary-card.savings { border-top: 4px solid #06b6d4; }
+    .summary-card.available { border-top: 4px solid #06b6d4; }
+
+    .summary-card-title {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+
+    .summary-card-value {
+      font-size: 1.4rem;
       font-weight: 700;
-      margin-top: 6px;
-      color: var(--text-primary);
     }
 
     .explanation {
       font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-top: 8px;
+      color: #94a3b8;
+      margin-top: 6px;
       font-style: italic;
     }
 
@@ -249,30 +263,18 @@
       border-left: 4px solid var(--warning-color);
     }
 
-    .hidden { display: none; }
-
     @media print {
       .no-print { display: none !important; }
       body { background: white; color: black; padding: 0; }
       .card { box-shadow: none; border: 1px solid #ccc; }
-      header { background: #0f172a; color: white; }
     }
 
     details summary {
       list-style: none;
     }
-    details summary::-webkit-details-marker {
-      display: none;
-    }
-    details summary::after {
-      content: "▼";
-      float: right;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-    details[open] summary::after {
-      content: "▲";
-    }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after { content: "▼"; float: right; font-size: 0.8rem; color: var(--text-secondary); }
+    details[open] summary::after { content: "▲"; }
   </style>
 </head>
 <body>
@@ -328,8 +330,8 @@
         <input type="date" id="savings-deadline">
       </div>
       <div>
-        <label>Ahorro mensual sugerido:</label>
-        <input type="text" id="savings-monthly" readonly>
+        <label>Ahorro por período:</label>
+        <input type="text" id="savings-per-period" readonly>
       </div>
     </div>
     <p id="savings-hint" class="explanation" style="margin-top:10px;"></p>
@@ -350,13 +352,21 @@
   <section class="card">
     <h2>Resultados</h2>
     <div id="summary"></div>
-    <table>
-      <thead>
-        <tr><th>Gasto / Meta</th><th>Original</th><th>% del ingreso</th><th>Explicación</th></tr>
-      </thead>
-      <tbody id="results-table"></tbody>
-    </table>
-    <div id="summary-cards"></div>
+    <div class="results-container">
+      <div class="results-header">Resumen financiero</div>
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>Gasto / Meta</th>
+            <th>Original</th>
+            <th>Apartar por período</th>
+            <th>Explicación</th>
+          </tr>
+        </thead>
+        <tbody id="results-table"></tbody>
+      </table>
+      <div class="summary-cards" id="summary-cards"></div>
+    </div>
   </section>
 
   <script>
@@ -366,25 +376,36 @@
       return isNaN(n) || n < 0 ? 0 : n;
     };
 
-    // Conversión a mensual: 1 mes = 4 semanas
-    const TO_MONTHLY = {
-      weekly: 4,      // semanal → x4
-      biweekly: 2,    // quincenal → x2
-      monthly: 1      // mensual → x1
+    const PERIOD_WEEKS = { weekly: 1, biweekly: 2, monthly: 4 };
+    const EXPENSE_TO_WEEKS = { 
+      weekly: 1, biweekly: 2, monthly: 4, bimonthly: 8, quarterly: 12, annual: 52 
+    };
+    const PERIOD_LABELS = { weekly: 'semana', biweekly: 'quincena', monthly: 'mes' };
+    const FULL_LABELS = {
+      weekly: 'semanal', biweekly: 'quincenal', monthly: 'mensual',
+      bimonthly: 'bimestral', quarterly: 'trimestral', annual: 'anual'
     };
 
-    function getFullMonthsBetween(startDate, endDate) {
+    function getPeriodsBetween(startDate, endDate, periodType) {
       if (endDate <= startDate) return 1;
-      let months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
-      months += endDate.getMonth() - startDate.getMonth();
-      if (endDate.getDate() < startDate.getDate()) months--;
-      return Math.max(1, months);
+      const totalWeeks = Math.ceil((endDate - startDate) / (7 * 24 * 60 * 60 * 1000));
+      const weeksPerPeriod = PERIOD_WEEKS[periodType] || 4;
+      return Math.max(1, Math.ceil(totalWeeks / weeksPerPeriod));
     }
 
-    function updateSavingsMonthly() {
+    function updateSavingsByPeriod() {
       const total = safeNum(document.getElementById('savings-total').value);
       const deadlineStr = document.getElementById('savings-deadline').value;
-      let months = 12;
+      const firstIncome = document.querySelector('#incomes .entry');
+
+      if (!firstIncome) {
+        document.getElementById('savings-per-period').value = '';
+        document.getElementById('savings-hint').textContent = 'Agrega un ingreso primero.';
+        return;
+      }
+
+      const periodType = firstIncome.querySelector('.period').value || 'monthly';
+      let periods = 12;
       let hint = '';
 
       if (deadlineStr) {
@@ -394,66 +415,22 @@
         deadline.setHours(0,0,0,0);
 
         if (deadline < today) {
-          months = 1;
-          hint = '⚠️ La fecha ya pasó. Ahorrarás todo este mes.';
+          periods = 1;
+          hint = `⚠️ Fecha pasada. Ahorra todo esta ${PERIOD_LABELS[periodType]}.`;
         } else {
-          months = getFullMonthsBetween(today, deadline);
+          periods = getPeriodsBetween(today, deadline, periodType);
           const formatter = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' });
-          hint = `📅 Plazo: ${months} mes${months !== 1 ? 'es' : ''} hasta ${formatter.format(deadline)}`;
+          hint = `📅 ${periods} ${PERIOD_LABELS[periodType]}${periods !== 1 ? 's' : ''} hasta ${formatter.format(deadline)}`;
         }
       } else {
-        hint = '📅 Elige una fecha exacta para calcular tu ahorro mensual.';
+        hint = `Elige fecha límite para calcular ahorro por ${PERIOD_LABELS[periodType]}.`;
       }
 
-      const monthly = total > 0 ? round2(total / months) : 0;
-      document.getElementById('savings-monthly').value = monthly;
+      const amountPerPeriod = total > 0 ? round2(total / periods) : 0;
+      document.getElementById('savings-per-period').value = amountPerPeriod;
       document.getElementById('savings-hint').textContent = hint;
     }
 
-    function init() {
-      const today = new Date();
-      const defaultDate = new Date(today);
-      defaultDate.setMonth(today.getMonth() + 12);
-      document.getElementById('savings-deadline').valueAsDate = defaultDate;
-      loadFromStorage();
-      attachListeners();
-      updateSavingsMonthly();
-      updateAll();
-    }
-
-    function attachListeners() {
-      document.getElementById('add-income').onclick = () => addIncome();
-      document.getElementById('add-expense').onclick = () => addExpense();
-      document.getElementById('reset').onclick = resetAll;
-      document.getElementById('save').onclick = saveToStorage;
-      document.getElementById('print').onclick = () => window.print();
-      document.getElementById('pdf').onclick = () => {
-        alert("Para guardar como PDF:\n1. Haz clic en 'Imprimir'\n2. En la ventana, elige 'Guardar como PDF'");
-        window.print();
-      };
-
-      ['savings-total', 'savings-deadline'].forEach(id => {
-        document.getElementById(id).addEventListener('input', updateSavingsMonthly);
-      });
-
-      document.getElementById('theme-color').onchange = (e) => {
-        document.documentElement.style.setProperty('--btn-primary', e.target.value);
-        document.documentElement.style.setProperty('--income-color', e.target.value);
-      };
-      document.getElementById('page-title-input').oninput = (e) => {
-        document.getElementById('page-title').textContent = e.target.value;
-      };
-
-      document.body.addEventListener('input', updateAll);
-      document.body.addEventListener('click', (e) => {
-        if (e.target.classList.contains('del')) {
-          e.target.closest('.entry').remove();
-          updateAll();
-        }
-      });
-    }
-
-    // ✅ ¡Función corregida! Ahora incluye frecuencia
     function addIncome(data = {}) {
       const period = data.period || 'monthly';
       const div = document.createElement('div');
@@ -472,117 +449,229 @@
         <button type="button" class="del btn-danger no-print" style="padding:8px; margin-top:12px;">Eliminar</button>
       `;
       document.getElementById('incomes').appendChild(div);
+      updateSavingsByPeriod();
     }
 
     function addExpense(data = {}) {
+      const type = data.type || 'recur';
       const div = document.createElement('div');
       div.className = 'entry';
+      const today = new Date().toISOString().split('T')[0];
+      const defaultDate = data.date || today;
+
       div.innerHTML = `
         <div class="form-row">
           <input type="text" class="name" placeholder="Nombre" value="${data.name || ''}">
           <input type="number" class="amount" placeholder="0" value="${data.amount || ''}" min="0" step="0.01">
         </div>
+        <label>Tipo de gasto:</label>
+        <select class="type">
+          <option value="recur" ${type === 'recur' ? 'selected' : ''}>Recurrente (frecuencia)</option>
+          <option value="once" ${type === 'once' ? 'selected' : ''}>Único (fecha exacta)</option>
+        </select>
+        <div class="recur-section ${type === 'recur' ? '' : 'hidden'}">
+          <label>Frecuencia:</label>
+          <select class="period">
+            <option value="weekly" ${data.period === 'weekly' ? 'selected' : ''}>Semanal</option>
+            <option value="biweekly" ${data.period === 'biweekly' ? 'selected' : ''}>Quincenal</option>
+            <option value="monthly" ${data.period === 'monthly' ? 'selected' : ''}>Mensual</option>
+            <option value="bimonthly" ${data.period === 'bimonthly' ? 'selected' : ''}>Bimestral</option>
+            <option value="quarterly" ${data.period === 'quarterly' ? 'selected' : ''}>Trimestral</option>
+            <option value="annual" ${data.period === 'annual' ? 'selected' : ''}>Anual</option>
+          </select>
+        </div>
+        <div class="once-section ${type === 'once' ? '' : 'hidden'}">
+          <label>Fecha del gasto:</label>
+          <input type="date" class="date" value="${defaultDate}">
+        </div>
         <button type="button" class="del btn-danger no-print" style="padding:8px; margin-top:12px;">Eliminar</button>
       `;
       document.getElementById('expenses').appendChild(div);
+
+      div.querySelector('.type').onchange = (e) => {
+        const t = e.target.value;
+        div.querySelector('.recur-section').classList.toggle('hidden', t !== 'recur');
+        div.querySelector('.once-section').classList.toggle('hidden', t !== 'once');
+      };
     }
 
-    // ✅ ¡Cálculo corregido! Ahora convierte a mensual
+    function init() {
+      const today = new Date();
+      const defaultDate = new Date(today);
+      defaultDate.setMonth(today.getMonth() + 12);
+      document.getElementById('savings-deadline').valueAsDate = defaultDate;
+      loadFromStorage();
+      attachListeners();
+      updateSavingsByPeriod();
+      updateAll();
+    }
+
+    function attachListeners() {
+      document.getElementById('add-income').onclick = () => addIncome();
+      document.getElementById('add-expense').onclick = () => addExpense();
+      document.getElementById('reset').onclick = resetAll;
+      document.getElementById('save').onclick = saveToStorage;
+      document.getElementById('print').onclick = () => window.print();
+      document.getElementById('pdf').onclick = () => {
+        alert("Para guardar como PDF:\n1. Haz clic en 'Imprimir'\n2. En la ventana, elige 'Guardar como PDF'");
+        window.print();
+      };
+
+      ['savings-total', 'savings-deadline'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateSavingsByPeriod);
+      });
+      document.getElementById('incomes').addEventListener('input', updateSavingsByPeriod);
+      document.getElementById('incomes').addEventListener('change', updateSavingsByPeriod);
+
+      document.getElementById('theme-color').onchange = (e) => {
+        document.documentElement.style.setProperty('--btn-primary', e.target.value);
+        document.documentElement.style.setProperty('--income-color', e.target.value);
+      };
+      document.getElementById('page-title-input').oninput = (e) => {
+        document.getElementById('page-title').textContent = e.target.value;
+      };
+
+      document.body.addEventListener('input', updateAll);
+      document.body.addEventListener('click', (e) => {
+        if (e.target.classList.contains('del')) {
+          e.target.closest('.entry').remove();
+          updateAll();
+        }
+      });
+    }
+
     function updateAll() {
-      let totalIncome = 0;
       const incomes = [];
       document.querySelectorAll('#incomes .entry').forEach(el => {
         const name = el.querySelector('.name').value.trim() || 'Ingreso';
         const amount = safeNum(el.querySelector('.amount').value);
         const period = el.querySelector('.period').value || 'monthly';
-        if (amount > 0) {
-          // Convertir a mensual
-          const monthlyAmount = amount * TO_MONTHLY[period];
-          totalIncome += monthlyAmount;
-          incomes.push({ name, amount, period, monthlyAmount });
-        }
+        if (amount > 0) incomes.push({ name, amount, period });
       });
 
-      let totalExpenses = 0;
+      if (incomes.length === 0) {
+        document.getElementById('results-table').innerHTML = '<tr><td colspan="4">Agrega al menos un ingreso.</td></tr>';
+        document.getElementById('summary-cards').innerHTML = '';
+        document.getElementById('summary').innerHTML = '';
+        document.getElementById('warning').style.display = 'none';
+        return;
+      }
+
+      const basePeriod = incomes[0].period;
+      const baseWeeks = PERIOD_WEEKS[basePeriod] || 4;
+      let totalIncome = 0;
+      incomes.forEach(i => {
+        const iWeeks = PERIOD_WEEKS[i.period] || 4;
+        const factor = baseWeeks / iWeeks;
+        i.equivalent = round2(i.amount * factor);
+        totalIncome += i.equivalent;
+      });
+
       const expenses = [];
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
       document.querySelectorAll('#expenses .entry').forEach(el => {
         const name = el.querySelector('.name').value.trim() || 'Gasto';
         const amount = safeNum(el.querySelector('.amount').value);
-        if (amount > 0) {
-          totalExpenses += amount;
-          expenses.push({ name, amount });
+        if (amount <= 0) return;
+
+        const type = el.querySelector('.type').value;
+        let apartado = 0;
+        let original = '';
+        let explanation = '';
+
+        if (type === 'once') {
+          const dateStr = el.querySelector('.date').value || new Date().toISOString().split('T')[0];
+          const due = new Date(dateStr);
+          due.setHours(0,0,0,0);
+          const periods = getPeriodsBetween(today, due, basePeriod);
+          apartado = round2(amount / periods);
+          original = `$${round2(amount)} (único, ${dateStr})`;
+          explanation = `Apartar $${apartado} por cada ${PERIOD_LABELS[basePeriod]} hasta ${dateStr}`;
+        } else {
+          const period = el.querySelector('.period').value;
+          const expWeeks = EXPENSE_TO_WEEKS[period] || 4;
+          const periodsInCycle = expWeeks / baseWeeks;
+          apartado = round2(amount / periodsInCycle);
+          original = `$${round2(amount)} / ${FULL_LABELS[period]}`;
+          explanation = `Apartar $${apartado} por cada ${PERIOD_LABELS[basePeriod]}`;
         }
+        expenses.push({ name, amount, type, original, apartado, explanation });
       });
 
+      const savingsAmount = safeNum(document.getElementById('savings-per-period').value);
       const savingsName = document.getElementById('savings-name').value.trim() || 'Ahorro';
-      const savingsMonthly = safeNum(document.getElementById('savings-monthly').value);
-      const totalOut = totalExpenses + savingsMonthly;
+      const totalSetAside = expenses.reduce((sum, e) => sum + e.apartado, 0);
+      const totalOut = totalSetAside + savingsAmount;
       const available = totalIncome - totalOut;
-      const isOverspending = available < 0;
-      const isLowSavings = totalIncome > 0 && (savingsMonthly / totalIncome) < 0.1;
 
       const warningEl = document.getElementById('warning');
       let warningText = '';
-      if (isOverspending) {
-        warningText = '⚠️ ¡Estás gastando más de lo que ganas! Reduce gastos o aumenta ingresos.';
-      } else if (isLowSavings) {
-        warningText = '💡 Considera aumentar tu ahorro a al menos el 10% de tus ingresos.';
+      if (available < 0) {
+        warningText = `⚠️ ¡Gastos + ahorro superan tus ingresos por ${PERIOD_LABELS[basePeriod]}!`;
+      } else if (totalIncome > 0 && (savingsAmount / totalIncome) < 0.1) {
+        warningText = `💡 Recomendado: ahorra ≥10% por ${PERIOD_LABELS[basePeriod]}.`;
       }
       warningEl.textContent = warningText;
       warningEl.style.display = warningText ? 'block' : 'none';
 
-      renderResults(incomes, expenses, savingsName, savingsMonthly, totalIncome, available);
+      renderResults(incomes, expenses, savingsName, savingsAmount, totalIncome, available, basePeriod);
     }
 
-    function renderResults(incomes, expenses, savingsName, savingsAmount, totalIncome, available) {
+    function renderResults(incomes, expenses, savingsName, savingsAmount, totalIncome, available, basePeriod) {
       const tbody = document.getElementById('results-table');
       tbody.innerHTML = '';
 
+      // Mostrar ingresos como fila en la tabla
       incomes.forEach(i => {
-        let freqText = '';
-        if (i.period === 'weekly') freqText = ' (semanal)';
-        else if (i.period === 'biweekly') freqText = ' (quincenal)';
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i.name}${freqText}</td><td>$${round2(i.amount)}</td><td>—</td><td>Ingreso mensualizado: $${round2(i.monthlyAmount)}</td>`;
+        tr.innerHTML = `<td>${i.name} (${FULL_LABELS[i.period]})</td><td>$${round2(i.amount)}</td><td>$${round2(i.equivalent)}</td><td>Ingreso por ${PERIOD_LABELS[basePeriod]}</td>`;
         tbody.appendChild(tr);
       });
 
+      // Mostrar gastos
       expenses.forEach(e => {
-        const pct = totalIncome > 0 ? round2((e.amount / totalIncome) * 100) : 0;
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${e.name}</td>
-          <td>$${round2(e.amount)}</td>
-          <td>${pct}%</td>
-          <td class="explanation">${pct > 40 ? '⚠️ Este gasto es alto' : ''}</td>
-        `;
+        tr.innerHTML = `<td>${e.name}</td><td>${e.original}</td><td>$${e.apartado}</td><td class="explanation">${e.explanation}</td>`;
         tbody.appendChild(tr);
       });
 
+      // Mostrar ahorro
       if (savingsAmount > 0) {
-        const pct = totalIncome > 0 ? round2((savingsAmount / totalIncome) * 100) : 0;
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${savingsName}</td>
-          <td>$${round2(savingsAmount)}</td>
-          <td>${pct}%</td>
-          <td>Ahorro mensual hasta la fecha límite</td>
-        `;
+        tr.innerHTML = `<td>${savingsName}</td><td>$${round2(savingsAmount)} total por ${PERIOD_LABELS[basePeriod]}</td><td>$${round2(savingsAmount)}</td><td>Ahorro por cada ${PERIOD_LABELS[basePeriod]}</td>`;
         tbody.appendChild(tr);
       }
 
-      document.getElementById('summary').innerHTML = `
-        <p><strong>Total ingresos (mensual):</strong> $${round2(totalIncome)}</p>
-        <p><strong>Gastos + Ahorro:</strong> $${round2(savingsAmount + expenses.reduce((s,e)=>s+e.amount,0))}</p>
-        <p><strong>Disponible:</strong> $${round2(Math.max(0, available))} ${available < 0 ? ' (déficit)' : ''}</p>
+      // ✅ NUEVO: Fila explícita de DINERO DISPONIBLE
+      const availableRow = document.createElement('tr');
+      availableRow.style.backgroundColor = available >= 0 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)';
+      availableRow.innerHTML = `
+        <td><strong>💰 Dinero disponible</strong></td>
+        <td>—</td>
+        <td><strong>$${round2(Math.max(0, available))}${available < 0 ? ' (déficit)' : ''}</strong></td>
+        <td>${available >= 0 ? '¡Listo para usar o invertir!' : '⚠️ Necesitas ajustar gastos o ingresos.'}</td>
       `;
+      tbody.appendChild(availableRow);
 
+      // Renderizar tarjetas de resumen
       document.getElementById('summary-cards').innerHTML = `
-        <div class="summary-grid">
-          <div class="summary-item income"><div>Ingresos</div><div class="summary-value">$${round2(totalIncome)}</div></div>
-          <div class="summary-item expense"><div>Gastos</div><div class="summary-value">$${round2(expenses.reduce((s,e)=>s+e.amount,0))}</div></div>
-          <div class="summary-item savings"><div>Ahorro</div><div class="summary-value">$${round2(savingsAmount)}</div></div>
-          <div class="summary-item available"><div>Disponible</div><div class="summary-value">$${round2(Math.max(0, available))}</div></div>
+        <div class="summary-card income">
+          <div class="summary-card-title">Ingreso</div>
+          <div class="summary-card-value">$${round2(totalIncome)}</div>
+        </div>
+        <div class="summary-card expense">
+          <div class="summary-card-title">Gastos</div>
+          <div class="summary-card-value">$${round2(totalSetAside)}</div>
+        </div>
+        <div class="summary-card savings">
+          <div class="summary-card-title">Ahorro</div>
+          <div class="summary-card-value">$${round2(savingsAmount)}</div>
+        </div>
+        <div class="summary-card available">
+          <div class="summary-card-title">Disponible</div>
+          <div class="summary-card-value">$${round2(Math.max(0, available))}</div>
         </div>
       `;
     }
@@ -594,10 +683,16 @@
           amount: el.querySelector('.amount').value,
           period: el.querySelector('.period').value
         })),
-        expenses: Array.from(document.querySelectorAll('#expenses .entry')).map(el => ({
-          name: el.querySelector('.name').value,
-          amount: el.querySelector('.amount').value
-        })),
+        expenses: Array.from(document.querySelectorAll('#expenses .entry')).map(el => {
+          const type = el.querySelector('.type').value;
+          return {
+            name: el.querySelector('.name').value,
+            amount: el.querySelector('.amount').value,
+            type: type,
+            period: type === 'recur' ? el.querySelector('.period').value : null,
+            date: type === 'once' ? el.querySelector('.date').value : null
+          };
+        }),
         savingsName: document.getElementById('savings-name').value,
         savingsTotal: document.getElementById('savings-total').value,
         savingsDeadline: document.getElementById('savings-deadline').value,
@@ -631,6 +726,7 @@
         document.getElementById('page-title').textContent = data.pageTitle;
         document.getElementById('page-title-input').value = data.pageTitle;
       }
+      updateAll();
     }
 
     function resetAll() {
@@ -655,6 +751,5 @@
 
     window.addEventListener('DOMContentLoaded', init);
   </script>
-
 </body>
 </html>
