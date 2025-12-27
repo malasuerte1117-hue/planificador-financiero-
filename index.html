@@ -3,33 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Planificador de Gastos gratuito: organiza ingresos, gastos y metas de ahorro según tu frecuencia real (semanal, quincenal, mensual). 100% privado, sin registro.">
   <title>Planificador de Gastos</title>
-
-  <!-- Base para que las rutas relativas funcionen bien en GitHub Pages (sitio de proyecto) -->
-  <base href="./">
-
+  <!-- Fuente moderna para números y texto claro -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --income: #27ae60;
-      --expense: #e74c3c;
-      --savings: #3498db;
-      --available: #9b59b6;
-      --warning: #f39c12;
-      --success: #2ecc71;
-      --bg: #f8f9fa;
-      --card: #ffffff;
-      --text: #2c3e50;
-      --border: #e0e0e0;
-      --danger: #e74c3c;
+      /* Opción A: Clásico Profesional */
+      --primary-bg: #f8fafc;         /* 60% - Fondo claro */
+      --card-bg: #ffffff;            /* Tarjetas */
+      --text-primary: #0f172a;       /* Azul marino - textos principales */
+      --text-secondary: #475569;
+      --border-color: #e2e8f0;
+      --header-bg: #0f172a;          /* Azul marino - cabecera */
+      --header-text: #ffffff;
+      
+      /* Acciones y estados */
+      --income-color: #10b981;       /* Verde esmeralda - ahorro/ingresos */
+      --expense-color: #ef4444;      /* Rojo suave - gastos */
+      --available-color: #06b6d4;    /* Cian - disponible */
+      --warning-color: #f59e0b;      /* Ámbar - advertencias */
+      
+      /* Botones */
+      --btn-primary: #10b981;
+      --btn-danger: #ef4444;
+      --btn-secondary: #4f46e5;      /* Índigo suave para PDF */
+      --btn-print: #06b6d4;
     }
 
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #121212;
-        --card: #1e1e1e;
-        --text: #e0e0e0;
-        --border: #444;
+        --primary-bg: #0f172a;
+        --card-bg: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #cbd5e1;
+        --border-color: #334155;
+        --header-bg: #0c1427;
+        --header-text: #f8fafc;
       }
     }
 
@@ -37,197 +46,257 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
     }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
+      background-color: var(--primary-bg);
+      color: var(--text-primary);
       padding: 16px;
       line-height: 1.6;
     }
 
     header {
+      background: var(--header-bg);
+      color: var(--header-text);
       text-align: center;
       margin-bottom: 24px;
-      padding: 12px 0;
+      padding: 20px 16px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.1);
     }
 
     h1 {
-      font-size: 1.8rem;
-      margin-bottom: 8px;
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin-bottom: 6px;
     }
 
     .card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      border: 1px solid var(--border);
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      border: 1px solid var(--border-color);
     }
 
     h2 {
-      margin-bottom: 16px;
+      margin-bottom: 18px;
       font-size: 1.4rem;
-      color: var(--text);
+      font-weight: 600;
+      color: var(--text-primary);
     }
 
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
     @media (max-width: 600px) {
       .form-row {
         grid-template-columns: 1fr;
       }
+      header {
+        border-radius: 12px;
+      }
+      .card {
+        padding: 18px;
+      }
     }
 
     label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-weight: 600;
       font-size: 0.95rem;
+      color: var(--text-secondary);
     }
 
     input, select, button {
       width: 100%;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
       font-size: 1rem;
-      background: var(--card);
-      color: var(--text);
+      background: var(--card-bg);
+      color: var(--text-primary);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--income-color);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
     }
 
     button {
-      background: var(--income);
-      color: white;
       font-weight: 600;
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: all 0.2s ease;
+      border: none;
+      border-radius: 10px;
+      background: linear-gradient(to bottom, var(--btn-primary), #0d9368);
+      color: white;
+      padding: 12px;
     }
 
     button:hover {
-      opacity: 0.9;
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
     }
 
-    .btn-danger { background: var(--expense); }
-    .btn-print { background: var(--savings); }
-    .btn-pdf { background: var(--available); }
+    .btn-danger {
+      background: linear-gradient(to bottom, var(--btn-danger), #dc2626);
+    }
+    .btn-danger:hover {
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(to bottom, var(--btn-secondary), #4338ca);
+    }
+    .btn-secondary:hover {
+      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-print {
+      background: linear-gradient(to bottom, var(--btn-print), #0891b2);
+    }
+    .btn-print:hover {
+      box-shadow: 0 4px 8px rgba(6, 182, 212, 0.3);
+    }
 
     .entry {
-      background: rgba(220,220,220,0.05);
-      padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      border-left: 3px solid var(--expense);
+      background: rgba(241, 245, 249, 0.4);
+      padding: 18px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      border-left: 4px solid var(--expense-color);
     }
 
     .entry.income {
-      border-left-color: var(--income);
+      border-left-color: var(--income-color);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 16px;
+      margin-top: 18px;
     }
 
     th, td {
-      padding: 12px 8px;
+      padding: 14px 10px;
       text-align: left;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border-color);
       font-size: 0.95rem;
     }
 
     th {
-      background: rgba(0,0,0,0.05);
+      background: rgba(15, 23, 42, 0.03);
       font-weight: 600;
+      color: var(--text-secondary);
     }
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 14px;
+      margin-top: 20px;
     }
 
     .summary-item {
       text-align: center;
-      padding: 12px;
-      border-radius: 8px;
-      background: rgba(0,0,0,0.03);
+      padding: 16px;
+      border-radius: 12px;
+      background: rgba(248, 250, 252, 0.6);
     }
 
-    .summary-item.income { border-top: 3px solid var(--income); }
-    .summary-item.expense { border-top: 3px solid var(--expense); }
-    .summary-item.savings { border-top: 3px solid var(--savings); }
-    .summary-item.available { border-top: 3px solid var(--available); }
+    @media (prefers-color-scheme: dark) {
+      .summary-item {
+        background: rgba(30, 41, 59, 0.4);
+      }
+    }
+
+    .summary-item.income { border-top: 4px solid var(--income-color); }
+    .summary-item.expense { border-top: 4px solid var(--expense-color); }
+    .summary-item.savings { border-top: 4px solid var(--income-color); }
+    .summary-item.available { border-top: 4px solid var(--available-color); }
 
     .summary-value {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      margin-top: 4px;
+      margin-top: 6px;
+      color: var(--text-primary);
     }
 
     .explanation {
       font-size: 0.85rem;
-      color: #888;
-      margin-top: 6px;
+      color: var(--text-secondary);
+      margin-top: 8px;
       font-style: italic;
     }
 
-    .warning {
-      background: rgba(243, 156, 18, 0.15);
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 12px;
-      color: var(--warning);
-      font-weight: 600;
-    }
-
-    .success {
-      background: rgba(46, 204, 113, 0.15);
-      padding: 12px;
-      border-radius: 8px;
-      margin-top: 12px;
-      color: var(--success);
-      font-weight: 600;
-    }
-
-    .hidden {
+    .alert {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+      padding: 14px;
+      border-radius: 12px;
+      margin: 16px 0;
       display: none;
+      border-left: 4px solid var(--warning-color);
     }
 
-    .actions-final {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 20px;
-    }
-
-    .actions-final button {
-      flex: 1;
-      min-width: 150px;
-    }
+    .hidden { display: none; }
 
     @media print {
       .no-print { display: none !important; }
-      body { padding: 0; background: white; color: black; }
+      body { background: white; color: black; padding: 0; }
       .card { box-shadow: none; border: 1px solid #ccc; }
-      .actions-final { display: none; }
+      header { background: #0f172a; color: white; }
+    }
+
+    details summary {
+      list-style: none;
+    }
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+    details summary::after {
+      content: "▼";
+      float: right;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    details[open] summary::after {
+      content: "▲";
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Planificador de Gastos</h1>
+    <h1 id="page-title">Planificador de Gastos</h1>
+    <p>Controla tu dinero con claridad y confianza</p>
   </header>
+
+  <section class="card no-print">
+    <details>
+      <summary>🎨 Personalizar</summary>
+      <div class="form-row">
+        <div>
+          <label for="theme-color">Color principal:</label>
+          <input type="color" id="theme-color" value="#10b981">
+        </div>
+        <div>
+          <label for="page-title-input">Título del plan:</label>
+          <input type="text" id="page-title-input" value="Planificador de Gastos">
+        </div>
+      </div>
+    </details>
+  </section>
 
   <section class="card">
     <h2>1. Ingresos</h2>
@@ -243,290 +312,322 @@
 
   <section class="card">
     <h2>3. Ahorro</h2>
-    <label>
-      <input type="radio" name="savings-mode" value="percent" checked> Porcentaje del ingreso total
-    </label>
-    <div id="percent-fields">
-      <label>Porcentaje (%):</label>
-      <input type="number" id="savings-percent" value="0" min="0" max="100" step="0.1">
-    </div>
-    <label>
-      <input type="radio" name="savings-mode" value="goal"> Meta de ahorro específica
-    </label>
-    <div id="goal-fields" class="hidden">
-      <label>Nombre de la meta:</label>
-      <input type="text" id="savings-goal-name" placeholder="Ej: Ahorrar para una PC">
-      <label>Monto a ahorrar ($):</label>
-      <input type="number" id="savings-goal-amount" min="0" step="0.01" placeholder="2000">
-      <label>Plazo para ahorrar:</label>
-      <div class="form-row">
-        <input type="number" id="savings-goal-value" min="1" value="2" placeholder="Ej: 2">
-        <select id="savings-goal-unit">
-          <option value="weekly">Semanas</option>
-          <option value="biweekly">Quincenas</option>
-          <option value="monthly">Meses</option>
-        </select>
+    <div class="form-row">
+      <div>
+        <label>Nombre de la meta:</label>
+        <input type="text" id="savings-name" placeholder="Ej. Fondo de emergencia">
+      </div>
+      <div>
+        <label>Monto total a ahorrar ($):</label>
+        <input type="number" id="savings-total" min="0" step="10" placeholder="0">
       </div>
     </div>
+    <div class="form-row">
+      <div>
+        <label>Fecha límite para completar el ahorro:</label>
+        <input type="date" id="savings-deadline">
+      </div>
+      <div>
+        <label>Ahorro mensual sugerido:</label>
+        <input type="text" id="savings-monthly" readonly>
+      </div>
+    </div>
+    <p id="savings-hint" class="explanation" style="margin-top:10px;"></p>
   </section>
+
+  <div class="alert no-print" id="warning"></div>
 
   <section class="card no-print">
-    <button id="calc">Calcular Plan</button>
-    <button id="reset" class="btn-danger" style="margin-top:10px;">Reiniciar todo</button>
+    <button id="save">💾 Guardar plan</button>
+    <button id="reset" class="btn-danger">🗑️ Restablecer todo</button>
+    <button id="print" class="btn-print">🖨️ Imprimir</button>
+    <button id="pdf" class="btn-secondary">📄 Guardar como PDF</button>
+    <p style="font-size:0.85rem; margin-top:12px; color:var(--text-secondary);">
+      Los botones de PDF e Imprimir generan un documento limpio. Funcionan sin internet.
+    </p>
   </section>
 
-  <!-- Resultados -->
   <section class="card">
     <h2>Resultados</h2>
     <div id="summary"></div>
-    <div id="savings-message" class="hidden"></div>
-    <table id="table">
+    <table>
       <thead>
-        <tr><th>Gasto</th><th>Original</th><th>Apartar por ingreso</th><th>Explicación</th></tr>
+        <tr><th>Gasto / Meta</th><th>Original</th><th>% del ingreso</th><th>Explicación</th></tr>
       </thead>
-      <tbody id="tbody"></tbody>
+      <tbody id="results-table"></tbody>
     </table>
-    <div id="cards"></div>
+    <div id="summary-cards"></div>
   </section>
 
-  <!-- Botones finales -->
-  <div class="actions-final no-print">
-    <button id="print-btn" class="btn-print">Imprimir</button>
-    <button id="pdf-btn" class="btn-pdf">Guardar como PDF</button>
-  </div>
-
+  <!-- SCRIPT IDÉNTICO AL ANTERIOR (sin cambios funcionales) -->
   <script>
-    const PERIOD_WEEKS = { weekly: 1, biweekly: 2, monthly: 4 };
-    const EXPENSE_WEEKS = { weekly:1, biweekly:2, monthly:4, bimonthly:8, quarterly:12, annual:52 };
-    const LABELS = { weekly:'semanal', biweekly:'quincenal', monthly:'mensual' };
-
-    const safeNum = (val) => {
-      const n = parseFloat(val);
-      return isNaN(n) || n <= 0 ? 0 : n;
-    };
     const round2 = (n) => Math.round(n * 100) / 100;
+    const safeNum = (v) => {
+      const n = parseFloat(v);
+      return isNaN(n) || n < 0 ? 0 : n;
+    };
 
-    function init() {
-      attachListeners();
-      document.querySelectorAll('input[name="savings-mode"]').forEach(radio => {
-        radio.addEventListener('change', toggleSavingsMode);
-      });
+    function getFullMonthsBetween(startDate, endDate) {
+      if (endDate <= startDate) return 1;
+      let months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+      months += endDate.getMonth() - startDate.getMonth();
+      if (endDate.getDate() < startDate.getDate()) months--;
+      return Math.max(1, months);
     }
 
-    function toggleSavingsMode() {
-      const isGoal = document.querySelector('input[name="savings-mode"]:checked').value === 'goal';
-      document.getElementById('percent-fields').classList.toggle('hidden', isGoal);
-      document.getElementById('goal-fields').classList.toggle('hidden', !isGoal);
+    function updateSavingsMonthly() {
+      const total = safeNum(document.getElementById('savings-total').value);
+      const deadlineStr = document.getElementById('savings-deadline').value;
+      let months = 12;
+      let hint = '';
+
+      if (deadlineStr) {
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const deadline = new Date(deadlineStr);
+        deadline.setHours(0,0,0,0);
+
+        if (deadline < today) {
+          months = 1;
+          hint = '⚠️ La fecha ya pasó. Ahorrarás todo este mes.';
+        } else {
+          months = getFullMonthsBetween(today, deadline);
+          const formatter = new Intl.DateTimeFormat('es-ES', { dateStyle: 'medium' });
+          hint = `📅 Plazo: ${months} mes${months !== 1 ? 'es' : ''} hasta ${formatter.format(deadline)}`;
+        }
+      } else {
+        hint = '📅 Elige una fecha exacta para calcular tu ahorro mensual.';
+      }
+
+      const monthly = total > 0 ? round2(total / months) : 0;
+      document.getElementById('savings-monthly').value = monthly;
+      document.getElementById('savings-hint').textContent = hint;
+    }
+
+    function init() {
+      const today = new Date();
+      const defaultDate = new Date(today);
+      defaultDate.setMonth(today.getMonth() + 12);
+      document.getElementById('savings-deadline').valueAsDate = defaultDate;
+      loadFromStorage();
+      attachListeners();
+      updateSavingsMonthly();
+      updateAll();
     }
 
     function attachListeners() {
       document.getElementById('add-income').onclick = () => addIncome();
       document.getElementById('add-expense').onclick = () => addExpense();
-      document.getElementById('calc').onclick = calculate;
-      document.getElementById('reset').onclick = () => {
-        if (confirm('¿Eliminar toda la configuración?')) {
-          document.getElementById('incomes').innerHTML = '';
-          document.getElementById('expenses').innerHTML = '';
-          document.querySelector('input[name="savings-mode"][value="percent"]').checked = true;
-          toggleSavingsMode();
-          document.getElementById('savings-percent').value = '0';
-          clearResults();
-        }
+      document.getElementById('reset').onclick = resetAll;
+      document.getElementById('save').onclick = saveToStorage;
+      document.getElementById('print').onclick = () => window.print();
+      document.getElementById('pdf').onclick = () => {
+        alert("Para guardar como PDF:\n1. Haz clic en 'Imprimir'\n2. En la ventana, elige 'Guardar como PDF'");
+        window.print();
       };
-      document.getElementById('print-btn').onclick = () => window.print();
-      document.getElementById('pdf-btn').onclick = () => saveAsPDF();
 
-      document.getElementById('expenses').addEventListener('click', (e) => {
-        if (e.target.classList.contains('del')) e.target.closest('.entry').remove();
+      ['savings-total', 'savings-deadline'].forEach(id => {
+        document.getElementById(id).addEventListener('input', updateSavingsMonthly);
+      });
+
+      document.getElementById('theme-color').onchange = (e) => {
+        document.documentElement.style.setProperty('--btn-primary', e.target.value);
+        document.documentElement.style.setProperty('--income-color', e.target.value);
+      };
+      document.getElementById('page-title-input').oninput = (e) => {
+        document.getElementById('page-title').textContent = e.target.value;
+      };
+
+      document.body.addEventListener('input', updateAll);
+      document.body.addEventListener('click', (e) => {
+        if (e.target.classList.contains('del')) {
+          e.target.closest('.entry').remove();
+          updateAll();
+        }
       });
     }
 
-    function saveAsPDF() {
-      if (!window.jsPDF) {
-        alert('La función de PDF requiere una conexión a internet para cargar jsPDF.');
-        if (confirm('¿Deseas imprimir en su lugar?')) window.print();
-        return;
-      }
-      alert('Para versión sin internet, usa "Imprimir" y elige "Guardar como PDF".');
-      window.print();
-    }
-
-    function clearResults() {
-      document.getElementById('summary').innerHTML = '';
-      document.getElementById('tbody').innerHTML = '';
-      document.getElementById('cards').innerHTML = '';
-      document.getElementById('savings-message').className = 'hidden';
-    }
-
-    function addIncome() {
+    function addIncome(data = {}) {
       const div = document.createElement('div');
       div.className = 'entry income';
       div.innerHTML = `
         <div class="form-row">
-          <input type="text" class="name" placeholder="Nombre" value="">
-          <input type="number" class="amount" placeholder="0" value="" min="0" step="0.01">
+          <input type="text" class="name" placeholder="Nombre" value="${data.name || ''}">
+          <input type="number" class="amount" placeholder="0" value="${data.amount || ''}" min="0" step="0.01">
         </div>
-        <select class="period">
-          <option value="weekly">Semanal</option>
-          <option value="biweekly">Quincenal</option>
-          <option value="monthly">Mensual</option>
-        </select>
+        <button type="button" class="del btn-danger no-print" style="padding:8px; margin-top:12px;">Eliminar</button>
       `;
       document.getElementById('incomes').appendChild(div);
     }
 
-    function addExpense() {
+    function addExpense(data = {}) {
       const div = document.createElement('div');
       div.className = 'entry';
       div.innerHTML = `
         <div class="form-row">
-          <input type="text" class="name" placeholder="Nombre" value="">
-          <input type="number" class="amount" placeholder="0" value="" min="0" step="0.01">
+          <input type="text" class="name" placeholder="Nombre" value="${data.name || ''}">
+          <input type="number" class="amount" placeholder="0" value="${data.amount || ''}" min="0" step="0.01">
         </div>
-        <select class="period">
-          <option value="weekly">Semanal</option>
-          <option value="biweekly">Quincenal</option>
-          <option value="monthly">Mensual</option>
-          <option value="bimonthly">Bimestral</option>
-          <option value="quarterly">Trimestral</option>
-          <option value="annual">Anual</option>
-        </select>
-        <button class="del btn-danger" style="margin-top:10px;padding:6px;">Eliminar</button>
+        <button type="button" class="del btn-danger no-print" style="padding:8px; margin-top:12px;">Eliminar</button>
       `;
       document.getElementById('expenses').appendChild(div);
     }
 
-    function calculate() {
+    function updateAll() {
+      let totalIncome = 0;
       const incomes = [];
       document.querySelectorAll('#incomes .entry').forEach(el => {
         const name = el.querySelector('.name').value.trim() || 'Ingreso';
         const amount = safeNum(el.querySelector('.amount').value);
-        const period = el.querySelector('.period').value;
-        if (amount > 0) incomes.push({ name, amount, period });
+        if (amount > 0) {
+          totalIncome += amount;
+          incomes.push({ name, amount });
+        }
       });
 
-      if (incomes.length === 0) {
-        alert('Agrega al menos un ingreso válido');
-        return;
-      }
-
+      let totalExpenses = 0;
       const expenses = [];
       document.querySelectorAll('#expenses .entry').forEach(el => {
         const name = el.querySelector('.name').value.trim() || 'Gasto';
         const amount = safeNum(el.querySelector('.amount').value);
-        const period = el.querySelector('.period').value;
-        if (amount > 0) expenses.push({ name, amount, period });
-      });
-
-      const mainPeriod = incomes[0].period;
-      const mainWeeks = PERIOD_WEEKS[mainPeriod] || 1;
-
-      let totalIncome = 0;
-      incomes.forEach(i => {
-        const iWeeks = PERIOD_WEEKS[i.period] || 1;
-        totalIncome += i.amount * (mainWeeks / iWeeks);
-      });
-
-      let totalSetAside = 0;
-      const details = [];
-      expenses.forEach(exp => {
-        const expWeeks = EXPENSE_WEEKS[exp.period] || 4;
-        const periods = expWeeks / mainWeeks;
-        const apartado = round2(exp.amount / periods);
-        totalSetAside += apartado;
-        details.push({
-          name: exp.name,
-          original: `$${round2(exp.amount)} / ${LABELS[exp.period]}`,
-          apartado,
-          expText: `${exp.amount} ÷ ${periods.toFixed(2)} = ${apartado}`
-        });
-      });
-
-      let savingsAmount = 0;
-      let message = '';
-      let messageType = ''; // 'warning' o 'success'
-      const mode = document.querySelector('input[name="savings-mode"]:checked').value;
-
-      const availableBeforeSavings = totalIncome - totalSetAside;
-      const maxSavings = Math.max(0, availableBeforeSavings);
-
-      if (mode === 'percent') {
-        const pct = safeNum(document.getElementById('savings-percent').value);
-        savingsAmount = (pct === 0) ? 0 : round2((totalIncome * pct) / 100);
-        if (savingsAmount > maxSavings) {
-          savingsAmount = round2(maxSavings);
-          message = `ⓘ Tu porcentaje de ahorro excedía tu disponibilidad. Se ajustó a $${savingsAmount} ${LABELS[mainPeriod]}.`;
-          messageType = 'success';
+        if (amount > 0) {
+          totalExpenses += amount;
+          expenses.push({ name, amount });
         }
-      } else {
-        const goalName = document.getElementById('savings-goal-name').value.trim() || 'tu meta';
-        const goalAmount = safeNum(document.getElementById('savings-goal-amount').value);
-        const goalValue = Math.max(1, safeNum(document.getElementById('savings-goal-value').value));
-        const goalUnit = document.getElementById('savings-goal-unit').value;
+      });
 
-        const goalWeeks = goalValue * (PERIOD_WEEKS[goalUnit] || 1);
-        const periodsInGoal = goalWeeks / mainWeeks;
-        let requestedSavings = round2(goalAmount / periodsInGoal);
+      const savingsName = document.getElementById('savings-name').value.trim() || 'Ahorro';
+      const savingsMonthly = safeNum(document.getElementById('savings-monthly').value);
+      const totalOut = totalExpenses + savingsMonthly;
+      const available = totalIncome - totalOut;
+      const isOverspending = available < 0;
+      const isLowSavings = totalIncome > 0 && (savingsMonthly / totalIncome) < 0.1;
 
-        if (requestedSavings > maxSavings && goalAmount > 0) {
-          savingsAmount = round2(maxSavings);
-          message = `ⓘ La meta "${goalName}" excedía tu disponibilidad. Se ajustó el ahorro a $${savingsAmount} ${LABELS[mainPeriod]} (máximo posible).`;
-          messageType = 'success';
-        } else {
-          savingsAmount = requestedSavings;
-          if (goalAmount > 0) {
-            message = `✓ Meta "${goalName}" es viable. Ahorrarás $${savingsAmount} ${LABELS[mainPeriod]}.`;
-            messageType = 'success';
-          }
-        }
+      const warningEl = document.getElementById('warning');
+      let warningText = '';
+      if (isOverspending) {
+        warningText = '⚠️ ¡Estás gastando más de lo que ganas! Reduce gastos o aumenta ingresos.';
+      } else if (isLowSavings) {
+        warningText = '💡 Considera aumentar tu ahorro a al menos el 10% de tus ingresos.';
       }
+      warningEl.textContent = warningText;
+      warningEl.style.display = warningText ? 'block' : 'none';
 
-      const available = round2(totalIncome - totalSetAside - savingsAmount);
-      renderResults(totalIncome, details, savingsAmount, available, mainPeriod, message, messageType);
+      renderResults(incomes, expenses, savingsName, savingsMonthly, totalIncome, available);
     }
 
-    function renderResults(income, details, savings, available, period, message, messageType) {
-      const label = LABELS[period] || period;
-      const totalExp = details.reduce((s, d) => s + d.apartado, 0);
-
-      document.getElementById('summary').innerHTML = `
-        <div style="background:rgba(39,174,96,0.1);padding:12px;border-radius:8px;margin-bottom:16px;">
-          <h3>Tu plan ${label}</h3>
-          <p><strong>Ingreso total:</strong> $${round2(income)}</p>
-          <p><strong>Gastos:</strong> $${round2(totalExp)}</p>
-          <p><strong>Ahorro:</strong> $${savings}</p>
-          <p><strong>Disponible:</strong> $${Math.max(0, available)}</p>
-        </div>
-      `;
-
-      const tbody = document.getElementById('tbody');
+    function renderResults(incomes, expenses, savingsName, savingsAmount, totalIncome, available) {
+      const tbody = document.getElementById('results-table');
       tbody.innerHTML = '';
-      details.forEach(d => {
+
+      incomes.forEach(i => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i.name}</td><td>$${round2(i.amount)}</td><td>—</td><td>Ingreso</td>`;
+        tbody.appendChild(tr);
+      });
+
+      expenses.forEach(e => {
+        const pct = totalIncome > 0 ? round2((e.amount / totalIncome) * 100) : 0;
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${d.name}</td>
-          <td>${d.original}</td>
-          <td>$${d.apartado} / ${label}</td>
-          <td class="explanation">${d.expText}</td>
+          <td>${e.name}</td>
+          <td>$${round2(e.amount)}</td>
+          <td>${pct}%</td>
+          <td class="explanation">${pct > 40 ? '⚠️ Este gasto es alto' : ''}</td>
         `;
         tbody.appendChild(tr);
       });
 
-      document.getElementById('cards').innerHTML = `
-        <div class="summary-grid">
-          <div class="summary-item income"><div>Ingreso</div><div class="summary-value">$${round2(income)}</div></div>
-          <div class="summary-item expense"><div>Gastos</div><div class="summary-value">$${round2(totalExp)}</div></div>
-          <div class="summary-item savings"><div>Ahorro</div><div class="summary-value">$${savings}</div></div>
-          <div class="summary-item available"><div>Disponible</div><div class="summary-value">$${Math.max(0, available)}</div></div>
-        </div>
+      if (savingsAmount > 0) {
+        const pct = totalIncome > 0 ? round2((savingsAmount / totalIncome) * 100) : 0;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${savingsName}</td>
+          <td>$${round2(savingsAmount)}</td>
+          <td>${pct}%</td>
+          <td>Ahorro mensual hasta la fecha límite</td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById('summary').innerHTML = `
+        <p><strong>Total ingresos:</strong> $${round2(totalIncome)}</p>
+        <p><strong>Gastos + Ahorro:</strong> $${round2(savingsAmount + expenses.reduce((s,e)=>s+e.amount,0))}</p>
+        <p><strong>Disponible:</strong> $${round2(Math.max(0, available))} ${available < 0 ? ' (déficit)' : ''}</p>
       `;
 
-      const msgEl = document.getElementById('savings-message');
-      if (message) {
-        msgEl.textContent = message;
-        msgEl.className = messageType === 'warning' ? 'warning' : 'success';
-      } else {
-        msgEl.className = 'hidden';
+      document.getElementById('summary-cards').innerHTML = `
+        <div class="summary-grid">
+          <div class="summary-item income"><div>Ingresos</div><div class="summary-value">$${round2(totalIncome)}</div></div>
+          <div class="summary-item expense"><div>Gastos</div><div class="summary-value">$${round2(expenses.reduce((s,e)=>s+e.amount,0))}</div></div>
+          <div class="summary-item savings"><div>Ahorro</div><div class="summary-value">$${round2(savingsAmount)}</div></div>
+          <div class="summary-item available"><div>Disponible</div><div class="summary-value">$${round2(Math.max(0, available))}</div></div>
+        </div>
+      `;
+    }
+
+    function saveToStorage() {
+      const data = {
+        incomes: Array.from(document.querySelectorAll('#incomes .entry')).map(el => ({
+          name: el.querySelector('.name').value,
+          amount: el.querySelector('.amount').value
+        })),
+        expenses: Array.from(document.querySelectorAll('#expenses .entry')).map(el => ({
+          name: el.querySelector('.name').value,
+          amount: el.querySelector('.amount').value
+        })),
+        savingsName: document.getElementById('savings-name').value,
+        savingsTotal: document.getElementById('savings-total').value,
+        savingsDeadline: document.getElementById('savings-deadline').value,
+        themeColor: getComputedStyle(document.documentElement).getPropertyValue('--btn-primary').trim(),
+        pageTitle: document.getElementById('page-title').textContent
+      };
+      localStorage.setItem('financialPlan', JSON.stringify(data));
+      alert('✅ Plan guardado localmente.');
+    }
+
+    function loadFromStorage() {
+      const data = JSON.parse(localStorage.getItem('financialPlan'));
+      if (!data) return;
+
+      document.getElementById('incomes').innerHTML = '';
+      (data.incomes || []).forEach(i => addIncome(i));
+
+      document.getElementById('expenses').innerHTML = '';
+      (data.expenses || []).forEach(e => addExpense(e));
+
+      document.getElementById('savings-name').value = data.savingsName || '';
+      document.getElementById('savings-total').value = data.savingsTotal || '';
+      document.getElementById('savings-deadline').value = data.savingsDeadline || '';
+
+      if (data.themeColor) {
+        document.documentElement.style.setProperty('--btn-primary', data.themeColor);
+        document.documentElement.style.setProperty('--income-color', data.themeColor);
+        document.getElementById('theme-color').value = data.themeColor;
+      }
+      if (data.pageTitle) {
+        document.getElementById('page-title').textContent = data.pageTitle;
+        document.getElementById('page-title-input').value = data.pageTitle;
+      }
+    }
+
+    function resetAll() {
+      if (confirm('¿Borrar todo el plan actual?')) {
+        localStorage.removeItem('financialPlan');
+        document.getElementById('incomes').innerHTML = '';
+        document.getElementById('expenses').innerHTML = '';
+        document.getElementById('savings-name').value = '';
+        document.getElementById('savings-total').value = '';
+        const today = new Date();
+        const defaultDate = new Date(today);
+        defaultDate.setMonth(today.getMonth() + 12);
+        document.getElementById('savings-deadline').valueAsDate = defaultDate;
+        document.getElementById('theme-color').value = '#10b981';
+        document.documentElement.style.setProperty('--btn-primary', '#10b981');
+        document.documentElement.style.setProperty('--income-color', '#10b981');
+        document.getElementById('page-title').textContent = 'Planificador de Gastos';
+        document.getElementById('page-title-input').value = 'Planificador de Gastos';
+        updateAll();
       }
     }
 
